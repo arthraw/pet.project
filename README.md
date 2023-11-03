@@ -10,4 +10,4 @@ pensando nisso ela gostaria de colocar alguns deles para adoção,, entao uma ma
 ### Tecnologias: Kotlin, JetPack Compose. ROOM, SQL.
 
 
->> Ainda em desenvolvimento :seedling:
+> Ainda em desenvolvimento :seedling:
