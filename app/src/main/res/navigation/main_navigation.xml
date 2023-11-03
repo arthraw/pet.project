@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/main_navigation"
+    app:startDestination="@id/welcomeActivity">
+
+    <activity
+        android:id="@+id/welcomeActivity"
+        android:name="com.project.petproject.presentation.WelcomeActivity"
+        android:label="WelcomeActivity" />
+    <activity
+        android:id="@+id/contactFormsActivity"
+        android:name="com.project.petproject.presentation.ContactFormsActivity"
+        android:label="ContactFormsActivity" />
+</navigation>
