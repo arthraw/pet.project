@@ -1,7 +1,7 @@
 # Maria Pets
 
-Este e um projeto ficticio para adocao de uma professora que possui muitos animais, 
-pensando nisso ela gostaria de colocar alguns deles para adoção,, entao uma maneira de atingir um numero maior de pessoas foi criando um app.
+Este e um projeto fictício para adoção de uma professora que possui muitos animais, 
+pensando nisso ela gostaria de colocar alguns deles para adoção, então uma maneira de atingir um número maior de pessoas foi criando um app.
 
 
 
