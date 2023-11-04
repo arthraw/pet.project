@@ -47,6 +47,7 @@ import com.project.petproject.R
 import com.project.petproject.presentation.add_edit_user.AddEditUserEvent
 import com.project.petproject.presentation.add_edit_user.AddEditUserViewModel
 import com.project.petproject.ui.theme.Blue40
+import com.project.petproject.ui.theme.Brown80
 import com.project.petproject.ui.theme.Orange80
 import com.project.petproject.ui.theme.PetprojectTheme
 import com.project.petproject.ui.theme.White
@@ -98,7 +99,7 @@ class FormsActivity : AppCompatActivity() {
                     fontSize = 38.sp,
                     lineHeight = 38.sp,
                     letterSpacing = 0.5.sp,
-                    color = White,
+                    color = Brown80,
                 )
             }
         }
@@ -131,6 +132,7 @@ class FormsActivity : AppCompatActivity() {
                 Text(
                     text = stringResource(R.string.label_username),
                     fontSize = 20.sp,
+                    color = White,
                     fontWeight = FontWeight.SemiBold,
                     style = MaterialTheme.typography.bodyLarge,
                     fontFamily = mainFontFamily,

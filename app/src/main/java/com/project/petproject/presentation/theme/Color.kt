@@ -2,17 +2,15 @@ package com.project.petproject.ui.theme
 
 import androidx.compose.ui.graphics.Color
 
-val Purple80 = Color(0xFFD0BCFF)
-val PurpleGrey80 = Color(0xFFCCC2DC)
-val Pink80 = Color(0xFFEFB8C8)
-
+// Main color
 val Orange80 = Color(0xFFFF862F)
 val Orange40 = Color(0xFFFFC25A)
 
+val Brown80 = Color(0xFF743913)
+val Brown40 = Color(0xFFA55C2E)
+// Text color
 val White = Color(0xFFFFFFFF)
 
+//Button color
 val Blue40 = Color(0xFF38B6FF)
 
-val Purple40 = Color(0xFF6650a4)
-val PurpleGrey40 = Color(0xFF625b71)
-val Pink40 = Color(0xFF7D5260)

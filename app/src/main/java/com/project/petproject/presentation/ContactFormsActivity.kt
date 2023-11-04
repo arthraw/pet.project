@@ -1,16 +1,15 @@
 package com.project.petproject.presentation
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
@@ -29,7 +28,10 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
@@ -37,7 +39,10 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.project.petproject.R
+import com.project.petproject.presentation.add_edit_user.AddEditUserEvent
+import com.project.petproject.presentation.add_edit_user.AddEditUserViewModel
 import com.project.petproject.ui.theme.Blue40
+import com.project.petproject.ui.theme.Brown80
 import com.project.petproject.ui.theme.Orange80
 import com.project.petproject.ui.theme.PetprojectTheme
 import com.project.petproject.ui.theme.White
@@ -77,9 +82,9 @@ class ContactFormsActivity : AppCompatActivity() {
                 fontSize = 38.sp,
                 lineHeight = 38.sp,
                 letterSpacing = 0.5.sp,
-                color = White,
+                color = Brown80,
             )
-            Spacer(modifier = Modifier.padding(0.dp, 30.dp))
+            Spacer(modifier = Modifier.padding(0.dp, 20.dp))
         }
     }
 
@@ -89,6 +94,11 @@ class ContactFormsActivity : AppCompatActivity() {
     private fun ContactForm() {
         var textPhone by remember { mutableStateOf(TextFieldValue("")) }
         var textEmail by remember { mutableStateOf(TextFieldValue("")) }
+        var validFormInputFlag by remember { mutableStateOf(false) }
+        var isValid by remember { mutableStateOf(false) }
+
+        val viewModel: AddEditUserViewModel = AddEditUserViewModel()
+
 
         Surface(
             color = Orange80,
@@ -111,18 +121,19 @@ class ContactFormsActivity : AppCompatActivity() {
                     fontSize = 20.sp,
                     lineHeight = 28.sp,
                     letterSpacing = 0.5.sp,
-                    color = White,
+                    color = Brown80,
                 )
-
-
+                Spacer(modifier = Modifier.padding(10.dp))
                 Text(
                     text =  stringResource(R.string.label_user_number),
+                    fontSize = 20.sp,
                     fontWeight = FontWeight.SemiBold,
                     style = MaterialTheme.typography.bodyLarge,
                     fontFamily = mainFontFamily,
                     modifier = Modifier
                         .align(Alignment.Start)
                         .padding(60.dp, 0.dp),
+                    color = White
                 )
 
                 Spacer(modifier = Modifier.padding(5.dp))
@@ -130,12 +141,23 @@ class ContactFormsActivity : AppCompatActivity() {
                 TextField(
                     value = textPhone,
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                    onValueChange = {
-                        textPhone = it
+                    onValueChange = {input: TextFieldValue ->
+                        val newValue = if (input.text.isBlank()) {
+                            input.text.toString()
+                        } else input.text
+                        textPhone = input.copy(
+                            text = newValue,
+                            selection = TextRange(newValue.length)
+                        )
+                        isValid = input.text.isNotEmpty()
+                        viewModel.onEvent(AddEditUserEvent.EnteredPhone(input.text))
+
                     },
                     placeholder = { Text(text = "Telefone")},
                     singleLine = true,
+                    isError = !isValid,
                     modifier = Modifier
+                        .shadow(elevation = 8.dp, ambientColor = Color.Black, clip = true)
                         .clip(shape = RoundedCornerShape(10.dp)),
 
                 )
@@ -144,54 +166,65 @@ class ContactFormsActivity : AppCompatActivity() {
 
                 Text(
                     text =  stringResource(R.string.label_user_email),
+                    fontSize = 20.sp,
                     fontWeight = FontWeight.SemiBold,
                     style = MaterialTheme.typography.bodyLarge,
                     fontFamily = mainFontFamily,
                     modifier = Modifier
                         .align(Alignment.Start)
                         .padding(60.dp, 0.dp),
+                    color = White
                 )
 
                 Spacer(modifier = Modifier.padding(5.dp))
 
                 TextField(
                     value = textEmail,
+                    isError = !isValid,
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
-                    onValueChange = {
-                        textEmail = it
+                    onValueChange = {input: TextFieldValue ->
+                        val newValue = if (input.text.isBlank()) {
+                            input.text.toString()
+
+                        } else input.text
+                        textEmail = input.copy(
+                            text = newValue,
+                            selection = TextRange(newValue.length)
+                        )
+                        isValid = input.text.isNotEmpty()
+                        viewModel.onEvent(AddEditUserEvent.EnteredEmail(input.text))
                     },
                     placeholder = { Text(text = "Email")},
                     singleLine = true,
                     modifier = Modifier
+                        .shadow(elevation = 8.dp, ambientColor = Color.Black, clip = true)
                         .clip(shape = RoundedCornerShape(10.dp)),
                 )
                 Spacer(modifier = Modifier.padding(30.dp))
-                FormButton()
-            }
-        }
-    }
 
-    @Composable
-    fun FormButton() {
-        Surface(
-            color = Orange80,
-            modifier = Modifier
-                .fillMaxWidth()
-                .background(Orange80)
+                if (validFormInputFlag) {
+                    validFormInput()
+                    validFormInputFlag = true
+                }
 
-        ) {
-            Row(
-                verticalAlignment = Alignment.Bottom,
-                horizontalArrangement = Arrangement.End
-            ) {
                 Button(
-                    onClick = { },
+                    onClick = {
+                        if (textEmail.text.isNotEmpty() && textPhone.text.isNotEmpty()) {
+                            val intent =
+                                Intent(this@ContactFormsActivity, ContactFormsActivity::class.java)
+                            startActivity(intent)
+                        }
+                        else {
+                            validFormInputFlag = true
+                        }
+                    },
                     colors = ButtonDefaults.buttonColors(
                         containerColor = Blue40
                     ),
                     modifier = Modifier
                         .height(50.dp)
                         .padding(25.dp, 5.dp)
+                        .offset(x = 90.dp)
                 ) {
                     Text(
                         text = "Finalizar",
@@ -204,7 +237,20 @@ class ContactFormsActivity : AppCompatActivity() {
                 }
             }
         }
+    }
 
+    @Composable
+    private fun validFormInput() {
+        var isValid by remember { mutableStateOf(false) }
+        if (!isValid) {
+            Text(
+                text = "Nenhum campo pode estar vazio.",
+                color = Color.Red,
+                modifier = Modifier
+                    .offset(y = (-30).dp),
+                fontWeight = FontWeight.Bold
+            )
+        }
     }
 
     @Preview
