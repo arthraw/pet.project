@@ -2,14 +2,29 @@
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/main_navigation"
-    app:startDestination="@id/welcomeActivity">
+    app:startDestination="@id/main_navigation">
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/nav_host_fragment"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
 
-    <activity
-        android:id="@+id/welcomeActivity"
-        android:name="com.project.petproject.presentation.WelcomeActivity"
-        android:label="WelcomeActivity" />
+        app:defaultNavHost="true"
+        app:navGraph="@navigation/nav_graph" />
     <activity
         android:id="@+id/contactFormsActivity"
         android:name="com.project.petproject.presentation.ContactFormsActivity"
         android:label="ContactFormsActivity" />
+    <activity
+        android:id="@+id/FormsActivity"
+        android:name="com.project.petproject.presentation.FormsActivity"
+        android:label="FormsActivity" />
+    <activity
+        android:id="@+id/welcomeActivity"
+        android:name="com.project.petproject.presentation.WelcomeActivity"
+        android:label="WelcomeActivity" />
+
 </navigation>

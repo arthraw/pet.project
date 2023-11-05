@@ -35,12 +35,12 @@ import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.project.petproject.R
 import com.project.petproject.presentation.add_edit_user.AddEditUserEvent
 import com.project.petproject.presentation.add_edit_user.AddEditUserViewModel
+import com.project.petproject.presentation.components.phoneInputValidation
 import com.project.petproject.ui.theme.Blue40
 import com.project.petproject.ui.theme.Brown80
 import com.project.petproject.ui.theme.Orange80
@@ -58,7 +58,7 @@ class ContactFormsActivity : AppCompatActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    ContactInfo()
+                    ContactForm()
                 }
             }
         }
@@ -87,7 +87,6 @@ class ContactFormsActivity : AppCompatActivity() {
             Spacer(modifier = Modifier.padding(0.dp, 20.dp))
         }
     }
-
 
     @OptIn(ExperimentalMaterial3Api::class)
     @Composable
@@ -140,19 +139,22 @@ class ContactFormsActivity : AppCompatActivity() {
 
                 TextField(
                     value = textPhone,
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone),
                     onValueChange = {input: TextFieldValue ->
                         val newValue = if (input.text.isBlank()) {
                             input.text.toString()
                         } else input.text
+                        if (input.text.length > 13) {
+                            validFormInputFlag = true
+                        }
                         textPhone = input.copy(
                             text = newValue,
-                            selection = TextRange(newValue.length)
                         )
                         isValid = input.text.isNotEmpty()
                         viewModel.onEvent(AddEditUserEvent.EnteredPhone(input.text))
-
+                        phoneInputValidation(input.annotatedString)
                     },
+                    visualTransformation = { phoneInputValidation(it) },
                     placeholder = { Text(text = "Telefone")},
                     singleLine = true,
                     isError = !isValid,
@@ -203,7 +205,7 @@ class ContactFormsActivity : AppCompatActivity() {
                 Spacer(modifier = Modifier.padding(30.dp))
 
                 if (validFormInputFlag) {
-                    validFormInput()
+                    ValidFormInput()
                     validFormInputFlag = true
                 }
 
@@ -240,7 +242,7 @@ class ContactFormsActivity : AppCompatActivity() {
     }
 
     @Composable
-    private fun validFormInput() {
+    private fun ValidFormInput() {
         var isValid by remember { mutableStateOf(false) }
         if (!isValid) {
             Text(
@@ -250,14 +252,6 @@ class ContactFormsActivity : AppCompatActivity() {
                     .offset(y = (-30).dp),
                 fontWeight = FontWeight.Bold
             )
-        }
-    }
-
-    @Preview
-    @Composable
-    fun ContactInfo() {
-        PetprojectTheme {
-            ContactForm()
         }
     }
 }
