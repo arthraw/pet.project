@@ -44,14 +44,14 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.project.petproject.R
-import com.project.petproject.presentation.add_edit_user.AddEditUserEvent
-import com.project.petproject.presentation.add_edit_user.AddEditUserViewModel
 import com.project.petproject.ui.theme.Blue40
 import com.project.petproject.ui.theme.Brown80
 import com.project.petproject.ui.theme.Orange80
 import com.project.petproject.ui.theme.PetprojectTheme
 import com.project.petproject.ui.theme.White
 import com.project.petproject.ui.theme.mainFontFamily
+import com.project.petproject.viewmodel.add_edit_user.AddEditUserEvent
+import com.project.petproject.viewmodel.add_edit_user.AddEditUserViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import dagger.hilt.android.HiltAndroidApp
 

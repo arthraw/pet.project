@@ -1,4 +1,4 @@
-package com.project.petproject.presentation.add_edit_user
+package com.project.petproject.viewmodel.add_edit_user
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider

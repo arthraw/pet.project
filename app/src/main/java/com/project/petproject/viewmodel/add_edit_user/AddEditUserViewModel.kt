@@ -1,4 +1,4 @@
-package com.project.petproject.presentation.add_edit_user
+package com.project.petproject.viewmodel.add_edit_user
 
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
@@ -21,9 +21,8 @@ class AddEditUserViewModel(
 
     private lateinit var usersUseCases: UsersUseCases
 
-    fun initUseCases() {
+    fun initUseCases(){
         usersUseCases = UsersUseCases(
-            getRequest = usersUseCases.getRequest,
             deleteUser = usersUseCases.deleteUser,
             insertUser = usersUseCases.insertUser,
             updateUser = usersUseCases.updateUser,
@@ -37,6 +36,7 @@ class AddEditUserViewModel(
             if (userEmail != "") {
                 viewModelScope.launch {
                     usersUseCases.getUser().also {
+
                         _userName.value = userName.value.copy(
                             text = userName.toString(),
                             isHintVisible = false
@@ -83,7 +83,6 @@ class AddEditUserViewModel(
     private val _eventFlow = MutableSharedFlow<UiEvent>()
     val eventFlow = _eventFlow.asSharedFlow()
 
-
     fun onEvent(event: AddEditUserEvent) {
         when (event) {
             is AddEditUserEvent.EnteredName -> {
@@ -118,7 +117,6 @@ class AddEditUserViewModel(
                                 email = userEmail.value.text,
                                 number = userPhone.value.text,
                                 name = userName.value.text,
-                                itRequestAccept = false
                             )
                         )
                         _eventFlow.emit(UiEvent.SaveUser)

@@ -1,4 +1,4 @@
-package com.project.petproject.presentation.add_edit_user
+package com.project.petproject.viewmodel.add_edit_user
 
 data class UserTextFieldState(
     val text: String = "",

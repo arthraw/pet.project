@@ -37,10 +37,8 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.ViewModelProvider
 import com.project.petproject.R
-import com.project.petproject.presentation.add_edit_user.AddEditUserEvent
-import com.project.petproject.presentation.add_edit_user.AddEditUserViewModel
-import com.project.petproject.presentation.components.phoneInputValidation
 import com.project.petproject.ui.theme.Blue40
 import com.project.petproject.ui.theme.Brown80
 import com.project.petproject.ui.theme.Orange80
@@ -48,10 +46,16 @@ import com.project.petproject.ui.theme.PetprojectTheme
 import com.project.petproject.ui.theme.White
 import com.project.petproject.ui.theme.mainFontFamily
 import com.project.petproject.ui.theme.petFontFamily
+import com.project.petproject.viewmodel.add_edit_user.AddEditUserEvent
+import com.project.petproject.viewmodel.add_edit_user.AddEditUserViewModel
 
 class ContactFormsActivity : AppCompatActivity() {
+
+    private lateinit var viewModel: AddEditUserViewModel
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        viewModel = ViewModelProvider(this).get(AddEditUserViewModel::class.java)
         setContent {
             PetprojectTheme {
                 Surface(
@@ -62,6 +66,11 @@ class ContactFormsActivity : AppCompatActivity() {
                 }
             }
         }
+    }
+
+    override fun onStart() {
+        super.onStart()
+        viewModel = ViewModelProvider(this).get(AddEditUserViewModel::class.java)
     }
 
     @Composable
@@ -95,8 +104,6 @@ class ContactFormsActivity : AppCompatActivity() {
         var textEmail by remember { mutableStateOf(TextFieldValue("")) }
         var validFormInputFlag by remember { mutableStateOf(false) }
         var isValid by remember { mutableStateOf(false) }
-
-        val viewModel: AddEditUserViewModel = AddEditUserViewModel()
 
 
         Surface(
@@ -152,9 +159,7 @@ class ContactFormsActivity : AppCompatActivity() {
                         )
                         isValid = input.text.isNotEmpty()
                         viewModel.onEvent(AddEditUserEvent.EnteredPhone(input.text))
-                        phoneInputValidation(input.annotatedString)
                     },
-                    visualTransformation = { phoneInputValidation(it) },
                     placeholder = { Text(text = "Telefone")},
                     singleLine = true,
                     isError = !isValid,
@@ -211,9 +216,10 @@ class ContactFormsActivity : AppCompatActivity() {
 
                 Button(
                     onClick = {
+                        viewModel.onEvent(AddEditUserEvent.SendForm)
                         if (textEmail.text.isNotEmpty() && textPhone.text.isNotEmpty()) {
                             val intent =
-                                Intent(this@ContactFormsActivity, ContactFormsActivity::class.java)
+                                Intent(this@ContactFormsActivity, DescriptionActivity::class.java)
                             startActivity(intent)
                         }
                         else {
