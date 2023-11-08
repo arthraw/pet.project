@@ -1,6 +1,10 @@
 <resources>
+<!--    All simple text for application-->
     <string name="app_name">pet_project</string>
     <string name="label_username">Nome:</string>
     <string name="label_user_number">Celular:</string>
     <string name="label_user_email">Email:</string>
+    <string name="label_desc">Agora queremos te conhecer um pouco mais...</string>
+    <string name="label_desc_sub">Conta um pouco sobre você</string>
+
 </resources>
