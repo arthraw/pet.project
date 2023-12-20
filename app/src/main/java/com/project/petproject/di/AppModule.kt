@@ -48,14 +48,8 @@ object AppModule {
             getUser = getUsers(repository)
         )
     }
-
-    @Module
-    @InstallIn(SingletonComponent::class)
-    object ViewModelModule {
-        @Provides
-        fun provideAddEditUserViewModelFactory(): ViewModelProvider.Factory {
-            return AddEditUserViewModelFactory()
-        }
+    @Provides
+    fun provideAddEditUserViewModelFactory(): ViewModelProvider.Factory {
+        return AddEditUserViewModelFactory()
     }
-
 }
