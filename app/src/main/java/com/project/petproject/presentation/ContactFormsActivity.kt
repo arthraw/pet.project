@@ -1,9 +1,8 @@
 package com.project.petproject.presentation
 
-import android.content.Intent
 import android.os.Bundle
+import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -38,6 +37,8 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
 import com.project.petproject.R
 import com.project.petproject.ui.theme.Blue40
 import com.project.petproject.ui.theme.Brown80
@@ -46,218 +47,212 @@ import com.project.petproject.ui.theme.PetprojectTheme
 import com.project.petproject.ui.theme.White
 import com.project.petproject.ui.theme.mainFontFamily
 import com.project.petproject.ui.theme.petFontFamily
-import com.project.petproject.viewmodel.add_edit_user.AddEditUserEvent
+import com.project.petproject.utils.Screens
 import com.project.petproject.viewmodel.add_edit_user.AddEditUserViewModel
+import dagger.hilt.android.AndroidEntryPoint
 
-class ContactFormsActivity : AppCompatActivity() {
+@AndroidEntryPoint
+class ContactFormsActivity : ComponentActivity() {
 
     private lateinit var viewModel: AddEditUserViewModel
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         viewModel = ViewModelProvider(this).get(AddEditUserViewModel::class.java)
+
         setContent {
             PetprojectTheme {
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    ContactForm()
+                    val navController = rememberNavController()
+                    NavigationProvider(navController = navController, viewModel = viewModel)
                 }
             }
         }
     }
 
-    override fun onStart() {
-        super.onStart()
-        viewModel = ViewModelProvider(this).get(AddEditUserViewModel::class.java)
-    }
+}
 
-    @Composable
-    private fun ContactFormTitle() {
+@Composable
+private fun ContactFormTitle(name: String?) {
+    Column(
+        verticalArrangement = Arrangement.Top,
+        horizontalAlignment = Alignment.Start
+    ) {
+        Spacer(modifier = Modifier.padding(0.dp, 50.dp))
+        Text(
+            text = "Como podemos te contatar $name?",
+            fontWeight = FontWeight.Bold,
+            modifier = Modifier
+                .align(Alignment.Start)
+                .padding(5.dp),
+            style = MaterialTheme.typography.bodyLarge,
+            fontFamily = mainFontFamily,
+            fontSize = 38.sp,
+            lineHeight = 38.sp,
+            letterSpacing = 0.5.sp,
+            color = Brown80,
+        )
+        Spacer(modifier = Modifier.padding(0.dp, 20.dp))
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun ContactForm(navController: NavHostController, viewModel: AddEditUserViewModel, name: String?) {
+    var textPhone by remember { mutableStateOf(TextFieldValue("")) }
+    var textEmail by remember { mutableStateOf(TextFieldValue("")) }
+    var validFormInputFlag by remember { mutableStateOf(false) }
+    var isValid by remember { mutableStateOf(false) }
+
+
+    Surface(
+        color = Orange80,
+        modifier = Modifier
+            .fillMaxSize()
+    ) {
         Column(
             verticalArrangement = Arrangement.Top,
-            horizontalAlignment = Alignment.Start
-        ) {
-            Spacer(modifier = Modifier.padding(0.dp, 50.dp))
+            horizontalAlignment = Alignment.CenterHorizontally
+        )
+        {
+            ContactFormTitle(name = name)
             Text(
-                text = "Como podemos te contatar?",
-                fontWeight = FontWeight.Bold,
+                text = "Informe um número e um email para contato:",
+                fontWeight = FontWeight.Normal,
                 modifier = Modifier
-                    .align(Alignment.Start)
                     .padding(5.dp),
                 style = MaterialTheme.typography.bodyLarge,
                 fontFamily = mainFontFamily,
-                fontSize = 38.sp,
-                lineHeight = 38.sp,
+                fontSize = 20.sp,
+                lineHeight = 28.sp,
                 letterSpacing = 0.5.sp,
                 color = Brown80,
             )
-            Spacer(modifier = Modifier.padding(0.dp, 20.dp))
-        }
-    }
-
-    @OptIn(ExperimentalMaterial3Api::class)
-    @Composable
-    private fun ContactForm() {
-        var textPhone by remember { mutableStateOf(TextFieldValue("")) }
-        var textEmail by remember { mutableStateOf(TextFieldValue("")) }
-        var validFormInputFlag by remember { mutableStateOf(false) }
-        var isValid by remember { mutableStateOf(false) }
-
-
-        Surface(
-            color = Orange80,
-            modifier = Modifier
-                .fillMaxSize()
-        ) {
-            Column(
-                verticalArrangement = Arrangement.Top,
-                horizontalAlignment = Alignment.CenterHorizontally
+            Spacer(modifier = Modifier.padding(10.dp))
+            Text(
+                text =  stringResource(R.string.label_user_number),
+                fontSize = 20.sp,
+                fontWeight = FontWeight.SemiBold,
+                style = MaterialTheme.typography.bodyLarge,
+                fontFamily = mainFontFamily,
+                modifier = Modifier
+                    .align(Alignment.Start)
+                    .padding(60.dp, 0.dp),
+                color = White
             )
-            {
-                ContactFormTitle()
-                Text(
-                    text = "Informe um número e um email para contato:",
-                    fontWeight = FontWeight.Normal,
-                    modifier = Modifier
-                        .padding(5.dp),
-                    style = MaterialTheme.typography.bodyLarge,
-                    fontFamily = mainFontFamily,
-                    fontSize = 20.sp,
-                    lineHeight = 28.sp,
-                    letterSpacing = 0.5.sp,
-                    color = Brown80,
-                )
-                Spacer(modifier = Modifier.padding(10.dp))
-                Text(
-                    text =  stringResource(R.string.label_user_number),
-                    fontSize = 20.sp,
-                    fontWeight = FontWeight.SemiBold,
-                    style = MaterialTheme.typography.bodyLarge,
-                    fontFamily = mainFontFamily,
-                    modifier = Modifier
-                        .align(Alignment.Start)
-                        .padding(60.dp, 0.dp),
-                    color = White
-                )
 
-                Spacer(modifier = Modifier.padding(5.dp))
+            Spacer(modifier = Modifier.padding(5.dp))
 
-                TextField(
-                    value = textPhone,
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone),
-                    onValueChange = {input: TextFieldValue ->
-                        val newValue = if (input.text.isBlank()) {
-                            input.text.toString()
-                        } else input.text
-                        if (input.text.length > 13) {
-                            validFormInputFlag = true
-                        }
-                        textPhone = input.copy(
-                            text = newValue,
-                        )
-                        isValid = input.text.isNotEmpty()
-                        viewModel.onEvent(AddEditUserEvent.EnteredPhone(input.text))
-                    },
-                    placeholder = { Text(text = "Telefone")},
-                    singleLine = true,
-                    isError = !isValid,
-                    modifier = Modifier
-                        .shadow(elevation = 8.dp, ambientColor = Color.Black, clip = true)
-                        .clip(shape = RoundedCornerShape(10.dp)),
-
-                )
-                
-                Spacer(modifier = Modifier.padding(12.dp))
-
-                Text(
-                    text =  stringResource(R.string.label_user_email),
-                    fontSize = 20.sp,
-                    fontWeight = FontWeight.SemiBold,
-                    style = MaterialTheme.typography.bodyLarge,
-                    fontFamily = mainFontFamily,
-                    modifier = Modifier
-                        .align(Alignment.Start)
-                        .padding(60.dp, 0.dp),
-                    color = White
-                )
-
-                Spacer(modifier = Modifier.padding(5.dp))
-
-                TextField(
-                    value = textEmail,
-                    isError = !isValid,
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
-                    onValueChange = {input: TextFieldValue ->
-                        val newValue = if (input.text.isBlank()) {
-                            input.text.toString()
-
-                        } else input.text
-                        textEmail = input.copy(
-                            text = newValue,
-                            selection = TextRange(newValue.length)
-                        )
-                        isValid = input.text.isNotEmpty()
-                        viewModel.onEvent(AddEditUserEvent.EnteredEmail(input.text))
-                    },
-                    placeholder = { Text(text = "Email")},
-                    singleLine = true,
-                    modifier = Modifier
-                        .shadow(elevation = 8.dp, ambientColor = Color.Black, clip = true)
-                        .clip(shape = RoundedCornerShape(10.dp)),
-                )
-                Spacer(modifier = Modifier.padding(30.dp))
-
-                if (validFormInputFlag) {
-                    ValidFormInput()
-                    validFormInputFlag = true
-                }
-
-                Button(
-                    onClick = {
-                        viewModel.onEvent(AddEditUserEvent.SendForm)
-                        if (textEmail.text.isNotEmpty() && textPhone.text.isNotEmpty()) {
-                            val intent =
-                                Intent(this@ContactFormsActivity, DescriptionActivity::class.java)
-                            startActivity(intent)
-                        }
-                        else {
-                            validFormInputFlag = true
-                        }
-                    },
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = Blue40
-                    ),
-                    modifier = Modifier
-                        .height(50.dp)
-                        .padding(25.dp, 5.dp)
-                        .offset(x = 90.dp)
-                ) {
-                    Text(
-                        text = "Finalizar",
-                        fontFamily = petFontFamily,
-                        style = MaterialTheme.typography.bodyLarge,
-                        color = White,
-                        fontSize = 17.sp,
-                        maxLines = 1,
+            TextField(
+                value = textPhone,
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone),
+                onValueChange = {input: TextFieldValue ->
+                    val newValue = if (input.text.isBlank()) {
+                        input.text.toString()
+                    } else input.text
+                    if (input.text.length > 13) {
+                        validFormInputFlag = true
+                    }
+                    textPhone = input.copy(
+                        text = newValue,
                     )
-                }
+                    isValid = input.text.isNotEmpty()
+                },
+                placeholder = { Text(text = "Telefone")},
+                singleLine = true,
+                isError = !isValid,
+                modifier = Modifier
+                    .shadow(elevation = 8.dp, ambientColor = Color.Black, clip = true)
+                    .clip(shape = RoundedCornerShape(10.dp)),
+
+                )
+
+            Spacer(modifier = Modifier.padding(12.dp))
+
+            Text(
+                text =  stringResource(R.string.label_user_email),
+                fontSize = 20.sp,
+                fontWeight = FontWeight.SemiBold,
+                style = MaterialTheme.typography.bodyLarge,
+                fontFamily = mainFontFamily,
+                modifier = Modifier
+                    .align(Alignment.Start)
+                    .padding(60.dp, 0.dp),
+                color = White
+            )
+
+            Spacer(modifier = Modifier.padding(5.dp))
+
+            TextField(
+                value = textEmail,
+                isError = !isValid,
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
+                onValueChange = {input: TextFieldValue ->
+                    val newValue = if (input.text.isBlank()) {
+                        input.text.toString()
+
+                    } else input.text
+                    textEmail = input.copy(
+                        text = newValue,
+                        selection = TextRange(newValue.length)
+                    )
+                    isValid = input.text.isNotEmpty()
+                },
+                placeholder = { Text(text = "Email")},
+                singleLine = true,
+                modifier = Modifier
+                    .shadow(elevation = 8.dp, ambientColor = Color.Black, clip = true)
+                    .clip(shape = RoundedCornerShape(10.dp)),
+            )
+            Spacer(modifier = Modifier.padding(30.dp))
+
+            if (validFormInputFlag) {
+                ValidFormInput()
+                validFormInputFlag = true
+            }
+
+            Button(
+                onClick = {
+                    if (textEmail.text.isNotEmpty() && textPhone.text.isNotEmpty()) {
+                        navController.navigate(Screens.DescriptionScreen.route)
+                    }
+                    else {
+                        validFormInputFlag = true
+                    }
+                },
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = Blue40
+                ),
+                modifier = Modifier
+                    .height(50.dp)
+                    .padding(25.dp, 5.dp)
+                    .offset(x = 90.dp)
+            ) {
+                Text(
+                    text = "Finalizar",
+                    fontFamily = petFontFamily,
+                    style = MaterialTheme.typography.bodyLarge,
+                    color = White,
+                    fontSize = 17.sp,
+                    maxLines = 1,
+                )
             }
         }
     }
+}
 
-    @Composable
-    private fun ValidFormInput() {
-        var isValid by remember { mutableStateOf(false) }
-        if (!isValid) {
-            Text(
-                text = "Nenhum campo pode estar vazio.",
-                color = Color.Red,
-                modifier = Modifier
-                    .offset(y = (-30).dp),
-                fontWeight = FontWeight.Bold
-            )
-        }
+@Composable
+private fun ValidFormInput() {
+    var isValid by remember { mutableStateOf(false) }
+    if (!isValid) {
+        Text(
+            text = "Nenhum campo pode estar vazio.",
+            color = Color.Red,
+            modifier = Modifier
+                .offset(y = (-30).dp),
+            fontWeight = FontWeight.Bold
+        )
     }
 }
