@@ -12,10 +12,11 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 
 @HiltViewModel
-class AddEditUserViewModel(
+class AddEditUserViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle = SavedStateHandle()
 ) : ViewModel() {
 
@@ -29,28 +30,6 @@ class AddEditUserViewModel(
             getUser = usersUseCases.getUser
         )
     }
-
-
-    init {
-        savedStateHandle.get<String>("email")?.let { userEmail ->
-            if (userEmail != "") {
-                viewModelScope.launch {
-                    usersUseCases.getUser().also {
-
-                        _userName.value = userName.value.copy(
-                            text = userName.toString(),
-                            isHintVisible = false
-                        )
-                        _userEmail.value = _userEmail.value.copy(
-                            text = userEmail,
-                            isHintVisible = false
-                        )
-                    }
-                }
-            }
-        }
-    }
-
 
     private val _userName = mutableStateOf(
         UserTextFieldState(
@@ -67,16 +46,16 @@ class AddEditUserViewModel(
     val userEmail: State<UserTextFieldState> = _userEmail
 
     private val _userPhone = mutableStateOf(
-        (UserTextFieldState(
+        UserTextFieldState(
             hint = "Escreva um numero de telefone para contato."
-        ))
+        )
     )
     val userPhone: State<UserTextFieldState> = _userPhone
 
     private val _userAbout = mutableStateOf(
-        (UserTextFieldState(
+        UserTextFieldState(
             hint = "Escreva um pequeno texto contando sobre você."
-        ))
+        )
     )
     val userAbout: State<UserTextFieldState> = _userAbout
 
@@ -129,8 +108,6 @@ class AddEditUserViewModel(
                     }
                 }
             }
-
-            else -> {}
         }
     }
 

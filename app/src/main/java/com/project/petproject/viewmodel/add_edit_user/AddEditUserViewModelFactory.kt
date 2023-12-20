@@ -6,9 +6,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
 @HiltViewModel
-class AddEditUserViewModelFactory @Inject constructor(
-//    private val usersUseCases: UsersUseCases
-) : ViewModelProvider.Factory {
+class AddEditUserViewModelFactory @Inject constructor() : ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(AddEditUserViewModel::class.java)) {
             return AddEditUserViewModel() as T
