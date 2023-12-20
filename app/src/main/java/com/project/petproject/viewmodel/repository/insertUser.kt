@@ -3,12 +3,14 @@ package com.project.petproject.viewmodel.repository
 import com.project.petproject.model.usermodel.InvalidNoteException
 import com.project.petproject.model.usermodel.UserData
 import com.project.petproject.viewmodel.repository.userRepository.UserRepository
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 
 class insertUser(
     private val repository: UserRepository
 ) {
     @Throws(InvalidNoteException::class)
-    suspend operator fun invoke(userData: UserData) {
+    suspend operator fun invoke(userData: UserData) = withContext(Dispatchers.IO) {
         if(userData.name.isBlank()) {
             throw InvalidNoteException("O nome não pode estar vazio.")
         }
