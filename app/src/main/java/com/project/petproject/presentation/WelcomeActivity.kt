@@ -1,7 +1,6 @@
 package com.project.petproject.presentation
 
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.animation.AnimatedContentTransitionScope
@@ -93,16 +92,9 @@ fun NavigationProvider(navController: NavHostController, viewModel: AddEditUserV
             )
         }
         composable(
-            route = Screens.ContactScreen.route,
+            route = Screens.ContactScreen.route + "/{name}",
             popEnterTransition = { slideIntoContainer(towards = AnimatedContentTransitionScope.SlideDirection.Left) },
-            popExitTransition = { slideOutOfContainer(towards = AnimatedContentTransitionScope.SlideDirection.Right) }
-        ) {
-            AboutUser(
-                navController = navController,
-            )
-        }
-        composable(
-            route = Screens.DescriptionScreen.route + "/{name}",
+            popExitTransition = { slideOutOfContainer(towards = AnimatedContentTransitionScope.SlideDirection.Right) },
             arguments = listOf(
                 navArgument("name") {
                     type = NavType.StringType
@@ -110,11 +102,20 @@ fun NavigationProvider(navController: NavHostController, viewModel: AddEditUserV
                     nullable = true
                 }
             )
-            ) { entry ->
+        ) { entry ->
             ContactForm(
                 navController = navController,
                 viewModel = viewModel,
                 name = entry.arguments?.getString("name"),
+            )
+        }
+        composable(
+            route = Screens.DescriptionScreen.route,
+            popEnterTransition = { slideIntoContainer(towards = AnimatedContentTransitionScope.SlideDirection.Left) },
+            popExitTransition = { slideOutOfContainer(towards = AnimatedContentTransitionScope.SlideDirection.Right) }
+        ) {
+            AboutUser(
+                navController = navController,
             )
         }
     }
@@ -155,7 +156,6 @@ fun WelcomePage(navController: NavHostController) {
                             inclusive = true
                         }
                     }
-                    Log.d("TESTE","TESTE")
                 }
             )
         }
@@ -185,7 +185,7 @@ private fun WelcomeButton(toFormScreen: () -> Unit) {
                     .padding(25.dp)
             )
             Button(
-                onClick = { toFormScreen },
+                onClick = { toFormScreen() },
                 colors = ButtonDefaults.buttonColors(
                     containerColor = Blue40
                 ),

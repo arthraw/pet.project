@@ -48,6 +48,7 @@ import com.project.petproject.ui.theme.White
 import com.project.petproject.ui.theme.mainFontFamily
 import com.project.petproject.ui.theme.petFontFamily
 import com.project.petproject.utils.Screens
+import com.project.petproject.viewmodel.add_edit_user.AddEditUserEvent
 import com.project.petproject.viewmodel.add_edit_user.AddEditUserViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -106,7 +107,6 @@ fun ContactForm(navController: NavHostController, viewModel: AddEditUserViewMode
     var validFormInputFlag by remember { mutableStateOf(false) }
     var isValid by remember { mutableStateOf(false) }
 
-
     Surface(
         color = Orange80,
         modifier = Modifier
@@ -159,6 +159,7 @@ fun ContactForm(navController: NavHostController, viewModel: AddEditUserViewMode
                         text = newValue,
                     )
                     isValid = input.text.isNotEmpty()
+                    viewModel.onEvent(AddEditUserEvent.EnteredPhone(textPhone.text))
                 },
                 placeholder = { Text(text = "Telefone")},
                 singleLine = true,
@@ -199,6 +200,7 @@ fun ContactForm(navController: NavHostController, viewModel: AddEditUserViewMode
                         selection = TextRange(newValue.length)
                     )
                     isValid = input.text.isNotEmpty()
+                    viewModel.onEvent(AddEditUserEvent.EnteredEmail(textEmail.text))
                 },
                 placeholder = { Text(text = "Email")},
                 singleLine = true,

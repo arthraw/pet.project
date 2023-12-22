@@ -53,6 +53,7 @@ import com.project.petproject.ui.theme.PetprojectTheme
 import com.project.petproject.ui.theme.White
 import com.project.petproject.ui.theme.mainFontFamily
 import com.project.petproject.utils.Screens
+import com.project.petproject.viewmodel.add_edit_user.AddEditUserEvent
 import com.project.petproject.viewmodel.add_edit_user.AddEditUserViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -164,6 +165,7 @@ fun FormPage(navController : NavHostController, viewModel: AddEditUserViewModel)
                             selection = TextRange(newValue.length)
                         )
                         isValid = input.text.isNotEmpty()
+                        viewModel.onEvent(AddEditUserEvent.EnteredName(text.text))
                     },
                     modifier = Modifier
                         .absoluteOffset(x = 5.dp)
