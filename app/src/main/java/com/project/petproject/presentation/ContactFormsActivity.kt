@@ -16,9 +16,10 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -40,14 +41,15 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.project.petproject.R
-import com.project.petproject.ui.theme.Blue40
-import com.project.petproject.ui.theme.Brown80
-import com.project.petproject.ui.theme.Orange80
+import com.project.petproject.presentation.theme.Blue40
+import com.project.petproject.presentation.theme.Brown80
+import com.project.petproject.presentation.theme.Orange80
+import com.project.petproject.presentation.theme.White
 import com.project.petproject.ui.theme.PetprojectTheme
-import com.project.petproject.ui.theme.White
 import com.project.petproject.ui.theme.mainFontFamily
 import com.project.petproject.ui.theme.petFontFamily
 import com.project.petproject.utils.Screens
+import com.project.petproject.utils.VisualPhoneTransformation
 import com.project.petproject.viewmodel.add_edit_user.AddEditUserEvent
 import com.project.petproject.viewmodel.add_edit_user.AddEditUserViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -132,7 +134,7 @@ fun ContactForm(navController: NavHostController, viewModel: AddEditUserViewMode
             )
             Spacer(modifier = Modifier.padding(10.dp))
             Text(
-                text =  stringResource(R.string.label_user_number),
+                text = stringResource(R.string.label_user_number),
                 fontSize = 20.sp,
                 fontWeight = FontWeight.SemiBold,
                 style = MaterialTheme.typography.bodyLarge,
@@ -145,35 +147,41 @@ fun ContactForm(navController: NavHostController, viewModel: AddEditUserViewMode
 
             Spacer(modifier = Modifier.padding(5.dp))
 
-            TextField(
+            val maxTelephoneNumber = 11
+
+            OutlinedTextField(
                 value = textPhone,
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone),
-                onValueChange = {input: TextFieldValue ->
-                    val newValue = if (input.text.isBlank()) {
-                        input.text.toString()
-                    } else input.text
-                    if (input.text.length > 13) {
+                onValueChange = {
+                    if (it.text.length > 13) {
                         validFormInputFlag = true
                     }
-                    textPhone = input.copy(
-                        text = newValue,
+                    textPhone = it.copy(
+                        text = it.text.take(maxTelephoneNumber),
                     )
-                    isValid = input.text.isNotEmpty()
+                    isValid = it.text.isNotEmpty()
                     viewModel.onEvent(AddEditUserEvent.EnteredPhone(textPhone.text))
                 },
-                placeholder = { Text(text = "Telefone")},
+                colors = TextFieldDefaults.textFieldColors(
+                    cursorColor = Color.White,
+                    focusedIndicatorColor = Color.Transparent,
+                    unfocusedIndicatorColor = Color.Transparent,
+                    disabledIndicatorColor = Color.Transparent,
+                    unfocusedLabelColor = Color.Transparent,
+                    errorLabelColor = Color.Transparent
+                ),
+                placeholder = { Text(text = "Telefone") },
                 singleLine = true,
-                isError = !isValid,
+                visualTransformation = VisualPhoneTransformation(),
                 modifier = Modifier
                     .shadow(elevation = 8.dp, ambientColor = Color.Black, clip = true)
                     .clip(shape = RoundedCornerShape(10.dp)),
-
-                )
+            )
 
             Spacer(modifier = Modifier.padding(12.dp))
 
             Text(
-                text =  stringResource(R.string.label_user_email),
+                text = stringResource(R.string.label_user_email),
                 fontSize = 20.sp,
                 fontWeight = FontWeight.SemiBold,
                 style = MaterialTheme.typography.bodyLarge,
@@ -186,11 +194,10 @@ fun ContactForm(navController: NavHostController, viewModel: AddEditUserViewMode
 
             Spacer(modifier = Modifier.padding(5.dp))
 
-            TextField(
+            OutlinedTextField(
                 value = textEmail,
-                isError = !isValid,
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
-                onValueChange = {input: TextFieldValue ->
+                onValueChange = { input: TextFieldValue ->
                     val newValue = if (input.text.isBlank()) {
                         input.text.toString()
 
@@ -202,7 +209,15 @@ fun ContactForm(navController: NavHostController, viewModel: AddEditUserViewMode
                     isValid = input.text.isNotEmpty()
                     viewModel.onEvent(AddEditUserEvent.EnteredEmail(textEmail.text))
                 },
-                placeholder = { Text(text = "Email")},
+                placeholder = { Text(text = "Email") },
+                colors = TextFieldDefaults.textFieldColors(
+                    cursorColor = Color.White,
+                    focusedIndicatorColor = Color.Transparent,
+                    unfocusedIndicatorColor = Color.Transparent,
+                    disabledIndicatorColor = Color.Transparent,
+                    unfocusedLabelColor = Color.Transparent,
+                    errorLabelColor = Color.Transparent
+                ),
                 singleLine = true,
                 modifier = Modifier
                     .shadow(elevation = 8.dp, ambientColor = Color.Black, clip = true)
@@ -219,8 +234,7 @@ fun ContactForm(navController: NavHostController, viewModel: AddEditUserViewMode
                 onClick = {
                     if (textEmail.text.isNotEmpty() && textPhone.text.isNotEmpty()) {
                         navController.navigate(Screens.DescriptionScreen.route)
-                    }
-                    else {
+                    } else {
                         validFormInputFlag = true
                     }
                 },
@@ -233,7 +247,7 @@ fun ContactForm(navController: NavHostController, viewModel: AddEditUserViewMode
                     .offset(x = 90.dp)
             ) {
                 Text(
-                    text = "Finalizar",
+                    text = "Próximo",
                     fontFamily = petFontFamily,
                     style = MaterialTheme.typography.bodyLarge,
                     color = White,
