@@ -1,5 +1,8 @@
 package com.project.petproject.presentation
 
+import android.content.Intent
+import android.content.pm.PackageManager
+import android.net.Uri
 import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
@@ -33,22 +36,25 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
-import com.project.petproject.ui.theme.Blue40
-import com.project.petproject.ui.theme.Brown80
-import com.project.petproject.ui.theme.Orange80
+import com.project.petproject.R
+import com.project.petproject.presentation.theme.Blue40
+import com.project.petproject.presentation.theme.Brown80
+import com.project.petproject.presentation.theme.Orange80
+import com.project.petproject.presentation.theme.White
 import com.project.petproject.ui.theme.PetprojectTheme
-import com.project.petproject.ui.theme.White
 import com.project.petproject.ui.theme.mainFontFamily
 import com.project.petproject.ui.theme.petFontFamily
 import com.project.petproject.viewmodel.add_edit_user.AddEditUserViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import java.net.URLEncoder
 
 
 @AndroidEntryPoint
@@ -88,7 +94,7 @@ private fun DescTitle(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AboutUser(navController: NavHostController) {
+fun AboutUser() {
     var textDesc by remember { mutableStateOf(TextFieldValue("")) }
     var validFormInputFlag by remember { mutableStateOf(false) }
     var isValid by remember { mutableStateOf(false) }
@@ -140,7 +146,7 @@ fun AboutUser(navController: NavHostController) {
                 OutlinedTextField(
                     value = textDesc,
                     maxLines = 5,
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone),
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
                     onValueChange = { input: TextFieldValue ->
                         val newValue = if (input.text.isBlank()) {
                             input.text.toString()
@@ -177,15 +183,33 @@ fun AboutUser(navController: NavHostController) {
         }
         Column (
             verticalArrangement = Arrangement.Bottom,
-            horizontalAlignment = Alignment.CenterHorizontally
+            horizontalAlignment = Alignment.End
         ) {
+            val number = stringResource(R.string.telephone)
+            val url = stringResource(R.string.api_url) + "&text=" + URLEncoder.encode(textDesc.text, "UTF-8");
+
+            val context = LocalContext.current
+            val packageManager = LocalContext.current.packageManager
+
+            val intent: Intent = try {
+                Intent(Intent.ACTION_SEND).apply {
+                    type = "text/plain"
+                    putExtra(Intent.EXTRA_TEXT, textDesc.text)
+                    putExtra(Intent.EXTRA_PHONE_NUMBER, number)
+                    val info = packageManager.getPackageInfo("com.whatsapp", PackageManager.GET_META_DATA)
+                    `package` = "com.whatsapp"
+                }
+            } catch (e: PackageManager.NameNotFoundException) {
+                Intent(Intent.ACTION_VIEW, Uri.parse(url))
+            }
             Row (
                 verticalAlignment = Alignment.Bottom,
-                horizontalArrangement = Arrangement.Center
+                horizontalArrangement = Arrangement.End
             ) {
                 Button(
                     onClick = {
                         if (textDesc.text.isNotEmpty()) {
+                            context.startActivity(intent)
                         }
                         else {
                             validFormInputFlag = true
@@ -195,6 +219,7 @@ fun AboutUser(navController: NavHostController) {
                         containerColor = Blue40
                     ),
                     modifier = Modifier
+                        .padding(15.dp)
                         .height(50.dp)
                 ) {
                     Text(
@@ -213,26 +238,8 @@ fun AboutUser(navController: NavHostController) {
 }
 
 @Composable
-fun DescSubmitButton(modifier: Modifier) {
-    Row (
-        verticalAlignment = Alignment.Bottom,
-        horizontalArrangement = Arrangement.End
-    ) {
-        Button(
-            onClick = { /*TODO*/ },
-            modifier = Modifier
-                .shadow(elevation = 8.dp, ambientColor = Color.Black, clip = true)
-                .clip(shape = RoundedCornerShape(10.dp))
-                .align(Alignment.Bottom),
-        ) {
-            Text(text = "Enviar")
-        }
-    }
-}
-
-@Composable
 private fun ValidFormInput() {
-    var isValid by remember { mutableStateOf(false) }
+    val isValid by remember { mutableStateOf(false) }
     if (!isValid) {
         Row (
             verticalAlignment = Alignment.CenterVertically,

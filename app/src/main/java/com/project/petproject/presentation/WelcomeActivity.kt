@@ -35,10 +35,10 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.project.petproject.R
-import com.project.petproject.ui.theme.Blue40
-import com.project.petproject.ui.theme.Orange80
+import com.project.petproject.presentation.theme.Blue40
+import com.project.petproject.presentation.theme.Orange80
+import com.project.petproject.presentation.theme.White
 import com.project.petproject.ui.theme.PetprojectTheme
-import com.project.petproject.ui.theme.White
 import com.project.petproject.ui.theme.petFontFamily
 import com.project.petproject.ui.theme.titleFontFamily
 import com.project.petproject.utils.Screens
@@ -114,9 +114,7 @@ fun NavigationProvider(navController: NavHostController, viewModel: AddEditUserV
             popEnterTransition = { slideIntoContainer(towards = AnimatedContentTransitionScope.SlideDirection.Left) },
             popExitTransition = { slideOutOfContainer(towards = AnimatedContentTransitionScope.SlideDirection.Right) }
         ) {
-            AboutUser(
-                navController = navController,
-            )
+            AboutUser()
         }
     }
 }

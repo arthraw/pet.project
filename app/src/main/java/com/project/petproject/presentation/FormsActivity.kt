@@ -22,9 +22,10 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -46,11 +47,11 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.project.petproject.R
-import com.project.petproject.ui.theme.Blue40
-import com.project.petproject.ui.theme.Brown80
-import com.project.petproject.ui.theme.Orange80
+import com.project.petproject.presentation.theme.Blue40
+import com.project.petproject.presentation.theme.Brown80
+import com.project.petproject.presentation.theme.Orange80
+import com.project.petproject.presentation.theme.White
 import com.project.petproject.ui.theme.PetprojectTheme
-import com.project.petproject.ui.theme.White
 import com.project.petproject.ui.theme.mainFontFamily
 import com.project.petproject.utils.Screens
 import com.project.petproject.viewmodel.add_edit_user.AddEditUserEvent
@@ -149,10 +150,9 @@ fun FormPage(navController : NavHostController, viewModel: AddEditUserViewModel)
                 verticalArrangement = Arrangement.SpaceBetween,
                 horizontalAlignment = Alignment.Start,
             ) {
-                TextField(
+                OutlinedTextField(
                     value = text,
                     maxLines = 1,
-                    isError = !isValid,
                     singleLine = true,
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
                     onValueChange = {input : TextFieldValue ->
@@ -178,6 +178,14 @@ fun FormPage(navController : NavHostController, viewModel: AddEditUserViewModel)
                             contentDescription = "UserIcon"
                         )
                     },
+                    colors = TextFieldDefaults.textFieldColors(
+                        cursorColor = Color.White,
+                        focusedIndicatorColor = Color.Transparent,
+                        unfocusedIndicatorColor = Color.Transparent,
+                        disabledIndicatorColor = Color.Transparent,
+                        unfocusedLabelColor = Color.Transparent,
+                        errorLabelColor = Color.Transparent
+                    ),
                     trailingIcon = {
                         Button(
                             onClick = {
@@ -201,7 +209,7 @@ fun FormPage(navController : NavHostController, viewModel: AddEditUserViewModel)
                 )
             }
             if (validFormNameFlag) {
-                validFormName()
+                ValidFormName()
                 validFormNameFlag = true
             }
         }
@@ -209,8 +217,8 @@ fun FormPage(navController : NavHostController, viewModel: AddEditUserViewModel)
 }
 
 @Composable
-private fun validFormName() {
-    var isValid by remember { mutableStateOf(false) }
+private fun ValidFormName() {
+    val isValid by remember { mutableStateOf(false) }
     if (!isValid) {
         Text(
             text = "Este campo não pode ser vazio.",
