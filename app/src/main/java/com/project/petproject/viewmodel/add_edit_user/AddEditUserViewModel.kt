@@ -1,5 +1,6 @@
 package com.project.petproject.viewmodel.add_edit_user
 
+import android.util.Log
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.SavedStateHandle
@@ -80,6 +81,8 @@ class AddEditUserViewModel @Inject constructor(
                 _userPhone.value = userPhone.value.copy(
                     text = event.phone
                 )
+                userPhone.value.text.replace(" ","").replace("-","")
+                Log.d("TELEFONE","${userPhone.value.text}")
             }
 
             is AddEditUserEvent.AboutUser -> {
