@@ -13,6 +13,8 @@ import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
 import androidx.core.view.WindowCompat
+import com.project.petproject.presentation.theme.Orange80
+import com.project.petproject.presentation.theme.White
 
 //private val DarkColorScheme = darkColorScheme(
 //    primary = Purple80,
